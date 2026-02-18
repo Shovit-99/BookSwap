@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads (don't push user images to git)
+server/uploads/
