@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      // Talking to the backend route we tested in Postman!
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password,
-      });
-      
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      alert("Login Successful! Welcome back.");
-      window.location.reload(); 
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed. Check your email/password.");
-    }
-  };
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  const loginToast = toast.loading('Signing you in...');
+  try {
+    const { data } = await axios.post('http://localhost:5000/api/users/login', { email, password });
+    localStorage.setItem('userInfo', JSON.stringify(data));
+    
+    toast.success('Login Successful! Welcome back.', { id: loginToast });
+    
+    window.location.href = "/";
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Login Failed', { id: loginToast });
+  }
+};
 
   return (
     <div className="flex justify-center items-center mt-20 px-4">
