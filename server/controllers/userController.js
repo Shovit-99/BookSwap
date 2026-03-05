@@ -60,3 +60,30 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Function to toggle user role between buyer and seller
+// Function to toggle user role
+export const updateUserRole = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      // Toggle logic: if currently buyer, make seller; otherwise make buyer
+      user.role = user.role === 'buyer' ? 'seller' : 'buyer';
+      const updatedUser = await user.save();
+
+      // Return the updated user so frontend localStorage can sync
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        role: updatedUser.role,
+        token: req.headers.authorization.split(' ')[1], // Preserve the token
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

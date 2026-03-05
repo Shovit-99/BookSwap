@@ -15,10 +15,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phone: { type: String, required: true },
+    phone: { 
+      type: String, 
+      required: true 
+    },
+    // Fixed: Moved inside the schema object
+    role: { 
+      type: String, 
+      default: 'buyer', 
+      enum: ['buyer', 'seller'] 
+    }
   },
   {
-    timestamps: true, // This automatically adds 'createdAt' and 'updatedAt'
+    timestamps: true, // Automatically adds 'createdAt' and 'updatedAt'
   }
 );
 

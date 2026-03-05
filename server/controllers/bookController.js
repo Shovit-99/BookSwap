@@ -53,18 +53,11 @@ export const getBooks = async (req, res) => {
 
 // @desc    Get a single bundle by ID (Public)
 export const getBookById = async (req, res) => {
-  try {
-    // 4. Also populate phone here for the details page
-    const book = await Book.findById(req.params.id)
-      .populate("sellerId", "name email phone");
-    
-    if (book) {
-      res.json(book);
-    } else {
-      res.status(404).json({ message: "Bundle not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  const book = await Book.findById(req.params.id).populate("sellerId", "name phone");
+  if (book) {
+    res.json(book);
+  } else {
+    res.status(404).json({ message: "Book not found" });
   }
 };
 

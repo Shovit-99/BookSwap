@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import MyListings from './pages/MyListings';
 import Profile from './pages/Profile';
 import { Toaster } from 'react-hot-toast';
+import BookDetails from './pages/BookDetails';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -43,6 +44,7 @@ useEffect(() => {
           <Route path="/register" element={<Register />} />
           <Route path="/my-listings" element={<MyListings />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/book/:id" element={<BookDetails />} />
         </Routes>
       </div>
     </Router>
