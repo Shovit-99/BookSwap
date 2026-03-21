@@ -1,70 +1,47 @@
 import React from 'react';
 
 const BookCard = ({ book }) => {
-  // Calculate the discount percentage to show how much the student saves
-  const savings = Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100);
-
-  // This function creates the WhatsApp link using the seller's phone number
-  const contactSeller = () => {
-    const sellerPhone = book.sellerId?.phone; // Pulls from the populated sellerId
-    
-    if (!sellerPhone) {
-      alert("Seller contact information is missing!");
-      return;
-    }
-
-    const message = `Hi! I'm interested in your Class ${book.grade} bundle (${book.bundleTitle}) on BookSwap. Is it still available?`;
-    const whatsappUrl = `https://wa.me/${sellerPhone}?text=${encodeURIComponent(message)}`;
-    
-    window.open(whatsappUrl, '_blank');
-  };
-
   return (
-    <div className="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-2xl transition-all p-5 relative group">
-      {/* 1. Grade & Savings Badges */}
-      <div className="flex justify-between items-center mb-4">
-        <span className="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
-          Class {book.grade}
-        </span>
-        {savings > 0 && (
-          <span className="bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-lg animate-pulse">
-            {savings}% OFF
-          </span>
-        )}
-      </div>
-
-      {/* 2. Bundle Title */}
-      <h3 className="text-xl font-bold text-slate-900 leading-tight mb-1 group-hover:text-blue-600 transition-colors">
-        {book.bundleTitle}
-      </h3>
-      
-      {/* 3. 📍 Location Tracking */}
-      <p className="text-blue-500 text-xs font-bold flex items-center mb-4">
-        <span className="mr-1">📍</span> {book.location}
-      </p>
-
-      {/* 4. 📚 The "4-5 Books" List Section */}
-      <div className="bg-slate-50 p-3 rounded-2xl mb-5 border border-slate-100">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bundle Includes:</p>
-        <p className="text-slate-600 text-sm italic leading-relaxed">
-          "{book.bookList}"
-        </p>
-      </div>
-
-      {/* 5. Pricing & Action */}
-      <div className="flex justify-between items-end border-t border-slate-50 pt-4">
-        <div>
-          <p className="text-slate-400 text-xs line-through font-bold">₹{book.originalPrice}</p>
-          <p className="text-2xl font-black text-slate-900">₹{book.price}</p>
-        </div>
+    <div className="flex flex-col h-full group cursor-pointer">
+      {/* Imagined "Book Cover" area with soft pastel background */}
+      <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl p-6 h-64 flex flex-col justify-between relative overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
         
-        {/* Updated Contact Button */}
-        <button 
-          onClick={contactSeller}
-          className="bg-green-500 text-white text-xs font-bold px-5 py-3 rounded-xl hover:bg-green-600 transition-all active:scale-95 shadow-lg shadow-green-100 flex items-center"
-        >
-          <span className="mr-2 text-base">💬</span> Contact
-        </button>
+        {/* Badges */}
+        <div className="flex justify-between items-start relative z-10">
+          <span className="bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
+            Class {book.grade}
+          </span>
+          <span className="bg-[#dcbca8] text-slate-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+            {book.discount || 70}% OFF
+          </span>
+        </div>
+
+        {/* Placeholder for Book Cover Art/Typography */}
+        <div className="text-center relative z-10 mt-auto">
+          <h3 className="text-2xl font-black text-slate-800 dark:text-white leading-tight mb-2 capitalize">
+            {book.bundleTitle}
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-widest">
+            Dehradun Region
+          </p>
+        </div>
+
+        {/* Decorative background shape */}
+        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/20 dark:bg-black/10 rounded-full blur-2xl group-hover:bg-[#dcbca8]/30 transition-colors"></div>
+      </div>
+
+      {/* Details below the "Cover" */}
+      <div className="pt-4 px-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider mb-1">
+          Study Bundle
+        </p>
+        <h4 className="text-lg font-bold text-slate-900 dark:text-white leading-tight truncate">
+          {book.bundleTitle}
+        </h4>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-lg font-bold text-slate-900 dark:text-white">₹{book.price}</span>
+          <span className="text-sm text-slate-400 line-through">₹{book.originalPrice || book.price * 3}</span>
+        </div>
       </div>
     </div>
   );

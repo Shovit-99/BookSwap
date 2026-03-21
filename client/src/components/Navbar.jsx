@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'; // Make sure to import useState and useEffect
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -6,6 +6,24 @@ const Navbar = () => {
   const navigate = useNavigate();
   // Check if user data exists in storage
   const user = JSON.parse(localStorage.getItem('userInfo'));
+
+  // --- Theme Toggle Logic ---
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check if they already chose dark mode in the past
+    return localStorage.getItem('theme') === 'dark';
+  });
+
+  useEffect(() => {
+    // Apply the 'dark' class to the HTML tag and save to localStorage
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
+  // --------------------------
 
   const handleLogout = () => {
     // 1. Remove the user data from the browser
@@ -30,8 +48,17 @@ const Navbar = () => {
           <Link to="/" className="dark:text-white font-medium">Marketplace</Link>
 
           <Link to="/add-book" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold transition-all">
-      + List a Bundle
-    </Link>
+            + List a Bundle
+          </Link>
+          
+          {/* Theme Toggle Button */}
+          <button 
+            onClick={() => setDarkMode(!darkMode)}
+            className="text-xl p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            title="Toggle Light/Dark Mode"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
           
           {user ? (
             <>
