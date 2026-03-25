@@ -11,33 +11,39 @@ import { Toaster } from 'react-hot-toast';
 import BookDetails from './pages/BookDetails';
 
 function App() {
-  // 1. The "Brain" stays here: Check if they saved a preference before
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
 
+  // NEW: Global Search State
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark'); // Save choice
+      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light'); // Save choice
+      localStorage.setItem('theme', 'light');
     }
   }, [darkMode]);
 
   return (
     <Router>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 font-sans">
+      <div className="min-h-screen bg-[#faf9f6] dark:bg-slate-950 transition-colors duration-300 font-sans">
         <Toaster position="top-center" reverseOrder={false} />
         
-        {/* 2. Pass the controls to your Navbar */}
-        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-
-        {/* The floating button has been permanently removed! */}
+        {/* Pass the search state down to the Navbar so the input can type into it */}
+        <Navbar 
+          darkMode={darkMode} 
+          setDarkMode={setDarkMode} 
+          searchQuery={searchQuery} 
+          setSearchQuery={setSearchQuery} 
+        />
 
         <Routes>
-          <Route path="/" element={<Marketplace />} />
+          {/* Pass the search state down to Marketplace so it can filter books */}
+          <Route path="/" element={<Marketplace searchQuery={searchQuery} />} />
           <Route path="/add-book" element={<AddBook />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
