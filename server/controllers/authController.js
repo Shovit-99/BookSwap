@@ -1,6 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Helper function to generate JWT token
 const generateToken = (id) => {
@@ -70,5 +73,51 @@ export const loginUser = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Authenticate with Google
+// @route   POST /api/auth/google
+export const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    // 1. Verify the Google ID token
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    // 2. Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // User exists — link Google ID if not already linked
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
+    } else {
+      // 3. Create new user (no password needed for Google users)
+      user = await User.create({
+        name,
+        email,
+        googleId,
+      });
+    }
+
+    // 4. Return JWT token + user info
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    console.error("Google auth error:", error);
+    res.status(401).json({ message: "Google authentication failed" });
   }
 };

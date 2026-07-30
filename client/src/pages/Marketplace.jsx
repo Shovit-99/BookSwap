@@ -5,14 +5,17 @@ import BookCard from '../components/BookCard';
 
 const Marketplace = ({ searchQuery }) => {
   const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/books');
+        const { data } = await axios.get('/api/books');
         setBooks(data);
       } catch (err) {
         console.error("Error fetching books", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchBooks();
@@ -20,100 +23,101 @@ const Marketplace = ({ searchQuery }) => {
 
   const filteredBooks = books.filter(book => {
     const safeSearchQuery = (searchQuery || '').toLowerCase();
-    const bundleTitle = (book.bundleTitle || '').toLowerCase();
-    const subjectsString = Array.isArray(book.bookList) 
-      ? book.bookList.join(' ').toLowerCase() 
-      : String(book.bookList || '').toLowerCase();
+    const title = (book.title || '').toLowerCase();
+    const author = (book.author || '').toLowerCase();
+    const category = (book.category || '').toLowerCase();
     
-    return bundleTitle.includes(safeSearchQuery) || subjectsString.includes(safeSearchQuery);
+    return title.includes(safeSearchQuery) || 
+           author.includes(safeSearchQuery) || 
+           category.includes(safeSearchQuery);
   });
 
   return (
-    <div className="min-h-screen bg-[#fcfaf6] dark:bg-slate-950 font-sans pb-20 transition-colors duration-300">
+    <div className="min-h-screen premium-bg font-sans pb-20">
       
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
-          
-          {/* Left Text & Creative Element */}
-          <div className="lg:w-1/2 space-y-6">
-            <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white leading-[1.1] tracking-tight transition-colors">
-              Let's take a new journey with a new Book
-            </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-lg transition-colors">
-              Access thousands of textbooks, bestsellers, and academic resources instantly. Save up to 80% by renting digital copies.
-            </p>
+      <div className="relative overflow-hidden bg-[#050810] py-20 px-6 border-b border-slate-800/50">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#cfa168]/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#b28347]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             
-            {/* Interactive Social Card */}
-            <div className="pt-4">
-              <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-[#ece7de] dark:border-slate-800 shadow-sm inline-block w-full max-w-md relative overflow-hidden group transition-colors">
-                
-                {/* Decorative side accent */}
-                <div className="absolute top-0 left-0 w-1 h-full bg-[#cca98f] group-hover:bg-[#3b5d73] dark:group-hover:bg-[#cca98f] transition-colors"></div>
-                
-                <p className="text-sm font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2 transition-colors">
-                  <span className="text-lg">🔥</span> Popular Searches
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div>
+                <h1 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4 tracking-tight">
+                  Discover Your
+                  <span className="block premium-gradient-text pt-2 pb-2">
+                    Next Great Read
+                  </span>
+                </h1>
+                <p className="text-xl text-slate-300 leading-relaxed max-w-lg">
+                  Browse thousands of books. Buy, sell, and swap with book lovers in your community.
                 </p>
-                
-                {/* Clickable Action Tags */}
-                <div className="flex flex-wrap gap-2.5">
-                  {['Class 10 PCM', 'Class 12 Commerce', 'JEE Mains', 'ICSE Board'].map((tag, i) => (
-                    <a 
-                      key={i} 
-                      href="#trending"
-                      className="px-4 py-2 rounded-lg bg-[#fcfaf6] dark:bg-slate-800 border border-[#ece7de] dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-[#cca98f] dark:hover:bg-[#cca98f] hover:text-white dark:hover:text-white hover:border-[#cca98f] transition-all"
+              </div>
+
+              {/* Popular Searches */}
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Popular Categories</p>
+                <div className="flex flex-wrap gap-3">
+                  {['Fiction', 'Educational', 'Programming', 'Science'].map((tag, i) => (
+                    <span
+                      key={i}
+                      className="px-4 py-2 rounded-lg bg-slate-900/50 border border-slate-700 text-slate-300 text-sm font-semibold hover:border-[#cfa168]/50 hover:text-[#cfa168] transition-all cursor-pointer"
                     >
                       {tag}
-                    </a>
+                    </span>
                   ))}
                 </div>
-                
-                {/* Social Proof Footer */}
-                <div className="mt-6 pt-4 border-t border-[#ece7de] dark:border-slate-800 flex items-center gap-3 transition-colors">
-                   <div className="flex -space-x-2">
-                     <div className="w-8 h-8 rounded-full bg-[#3b5d73] border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] text-white font-bold z-30 shadow-sm">RS</div>
-                     <div className="w-8 h-8 rounded-full bg-[#cca98f] border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] text-white font-bold z-20 shadow-sm">AK</div>
-                     <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300 font-bold z-10 shadow-sm">+1k</div>
-                   </div>
-                   <p className="text-xs text-slate-500 dark:text-slate-400 font-medium transition-colors">Active students swapping today</p>
-                </div>
-
               </div>
             </div>
 
-          </div>
-
-          {/* Right Hero Image */}
-          <div className="lg:w-1/2 w-full">
-            <div className="rounded-[2.5rem] overflow-hidden h-[400px] relative shadow-lg">
-              <img 
-                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop" 
-                alt="Student reading" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
+            {/* Right Image */}
+            <div className="hidden lg:block">
+              <div className="rounded-3xl overflow-hidden h-[400px] relative shadow-2xl shadow-[#cfa168]/10 border border-[#cfa168]/20">
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[#050810]/50 z-10 pointer-events-none"></div>
+                <img
+                  src="/marketplace-banner.png"
+                  alt="Books"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Grid Section */}
-      <div id="trending" className="max-w-7xl mx-auto px-6 mt-10">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white transition-colors">Available Bundles</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mt-1 transition-colors">Recently added by students</p>
+      {/* Books Grid */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="mb-8">
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-4xl font-black text-white mb-2">Available Books</h2>
+              <p className="text-slate-400">{filteredBooks.length} books found</p>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {filteredBooks.map((book) => (
-            <Link to={`/book/${book._id}`} key={book._id} className="h-full block">
-              <BookCard book={book} />
-            </Link>
-          ))}
-        </div>
-
-        {filteredBooks.length === 0 && (
-          <div className="text-center py-20 text-slate-500 dark:text-slate-400 font-bold transition-colors">
-            No bundles found for "{searchQuery}". Try clearing your search!
+        {loading ? (
+          <div className="text-center py-20">
+            <p className="text-slate-400 text-lg">Loading books...</p>
+          </div>
+        ) : filteredBooks.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {filteredBooks.map((book) => (
+              <Link to={`/book/${book._id}`} key={book._id} className="h-full">
+                <BookCard book={book} />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 premium-glass-card rounded-2xl">
+            <p className="text-slate-400 text-lg">
+              No books found{searchQuery && ` for "${searchQuery}"`}. Try adjusting your search!
+            </p>
           </div>
         )}
       </div>

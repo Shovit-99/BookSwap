@@ -19,10 +19,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // Sends login credentials to the backend
       const { data } = await axios.post('/api/users/login', formData);
-      
-      // Save user to browser and update UI
       localStorage.setItem('userInfo', JSON.stringify(data));
       toast.success('Welcome back! 📚');
       navigate('/');
@@ -33,23 +30,34 @@ const Login = () => {
     }
   };
 
+
+
   return (
-    <div className="min-h-screen bg-[#faf9f6] dark:bg-slate-950 flex flex-col justify-center py-12 px-6 sm:px-6 lg:px-8 transition-colors font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-          Welcome Back
-        </h2>
-        <p className="mt-2 text-center text-slate-500 dark:text-slate-400">
-          Log in to your BookSwap Dehradun account
-        </p>
+    <div className="min-h-screen premium-bg flex items-center justify-center relative overflow-hidden py-12 px-6">
+      {/* Background animations */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#cfa168]/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#b28347]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white dark:bg-slate-900 py-10 px-6 sm:px-10 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800">
+      <div className="relative z-10 w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-black text-white mb-2 tracking-tight">
+            Book<span className="premium-gradient-text">Swap</span>
+          </h1>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Welcome Back</h2>
+          <p className="text-slate-400 text-lg">
+            Log in to continue your book adventure
+          </p>
+        </div>
+
+        {/* Form Card */}
+        <div className="premium-glass-card rounded-3xl p-8 shadow-2xl">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            
+            {/* Email Input */}
             <div>
-              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2">
+              <label className="block text-sm font-bold text-slate-300 uppercase tracking-widest mb-3">
                 Email Address
               </label>
               <input 
@@ -59,19 +67,19 @@ const Login = () => {
                 placeholder="you@example.com" 
                 value={formData.email} 
                 onChange={handleChange} 
-                className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white px-5 py-3.5 rounded-xl outline-none focus:border-[#dcbca8] focus:ring-4 focus:ring-[#dcbca8]/10 transition-all font-medium" 
+                className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-5 py-3.5 rounded-lg outline-none focus:border-[#cfa168]/50 focus:ring-2 focus:ring-[#cfa168]/20 transition-all font-medium placeholder:text-slate-500" 
               />
             </div>
 
+            {/* Password Input */}
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+              <div className="flex justify-between items-center mb-3">
+                <label className="block text-sm font-bold text-slate-300 uppercase tracking-widest">
                   Password
                 </label>
-                {/* Optional: You can link this to a forgot password route later */}
-                <span className="text-xs font-bold text-[#dcbca8] hover:text-[#c9a792] cursor-pointer transition-colors">
+                <Link to="/forgot-password" className="text-sm font-bold text-[#cfa168] hover:text-[#fbe5b8] transition-colors">
                   Forgot?
-                </span>
+                </Link>
               </div>
               <input 
                 name="password" 
@@ -80,30 +88,47 @@ const Login = () => {
                 placeholder="••••••••" 
                 value={formData.password} 
                 onChange={handleChange} 
-                className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white px-5 py-3.5 rounded-xl outline-none focus:border-[#dcbca8] focus:ring-4 focus:ring-[#dcbca8]/10 transition-all font-medium" 
+                className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-5 py-3.5 rounded-lg outline-none focus:border-[#cfa168]/50 focus:ring-2 focus:ring-[#cfa168]/20 transition-all font-medium placeholder:text-slate-500" 
               />
             </div>
 
+            {/* Submit Button */}
             <button 
               type="submit" 
               disabled={isLoading}
-              className={`w-full py-4 rounded-xl text-lg font-bold transition-all flex justify-center items-center gap-2 ${
+              className={`w-full py-3.5 rounded-lg text-lg transition-all flex justify-center items-center gap-2 tracking-widest ${
                 isLoading 
-                  ? 'bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed'
-                  : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 active:scale-95 shadow-lg shadow-slate-900/10'
+                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  : 'premium-btn'
               }`}
             >
-              {isLoading ? 'Signing in...' : 'Log In'}
+              {isLoading ? '🔄 Signing in...' : '✨ Log In'}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-slate-500">
-            Don't have an account yet?{' '}
-            <Link to="/register" className="font-bold text-slate-900 dark:text-white hover:text-[#dcbca8] transition-colors">
+          {/* Divider */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-700/50"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-slate-900/80 text-slate-400">or</span>
+            </div>
+          </div>
+
+          {/* Sign Up Link */}
+          <p className="text-center text-slate-400">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-bold text-[#cfa168] hover:text-[#fbe5b8] transition-colors">
               Sign up here
             </Link>
           </p>
         </div>
+
+        {/* Footer */}
+        <p className="text-center text-slate-500 text-sm mt-8">
+          Protected by enterprise-grade security
+        </p>
       </div>
     </div>
   );

@@ -2,35 +2,65 @@ import mongoose from "mongoose";
 
 const bookSchema = new mongoose.Schema(
   {
-    bundleTitle: { type: String, required: true, trim: true },
-    location: { type: String, required: true },
-    // Changed to Array so you can list them with bullet points in the UI
-    bookList: { type: [String], required: true }, 
-    price: { type: Number, required: true },
-    originalPrice: { type: Number, required: true },
-    grade: { type: String, required: true }, // e.g., "Class 10"
-    condition: { type: String, required: true },
-    description: { type: String },
-    image: { type: String, default: "https://via.placeholder.com/150" },
-    sellerId: {
+    title: { 
+      type: String, 
+      required: true, 
+      trim: true 
+    },
+    author: { 
+      type: String, 
+      required: true, 
+      trim: true 
+    },
+    category: { 
+      type: String, 
+      required: true,
+      enum: ['Fiction', 'Educational', 'Programming', 'Science', 'History', 'Biography', 'Self-Help', 'Other']
+    },
+    price: { 
+      type: Number, 
+      required: true 
+    },
+    condition: { 
+      type: String, 
+      required: true,
+      enum: ['Like New', 'Good', 'Fair']
+    },
+    description: { 
+      type: String,
+      default: ""
+    },
+    image: { 
+      type: String, 
+      default: "https://via.placeholder.com/300x400?text=Book+Cover" 
+    },
+    seller: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User", // Links to the User who has the WhatsApp phone number
+      ref: "User"
     },
     isSold: {
       type: Boolean,
       default: false,
     },
+    location: {
+      type: String,
+      default: "Dehradun"
+    }
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true }, // Allows the discount calculation to show up in the frontend
+    toJSON: { virtuals: true }
   }
 );
 
-// This automatically calculates the discount percentage for your UI badge
-bookSchema.virtual('discount').get(function() {
-  return Math.round(((this.originalPrice - this.price) / this.originalPrice) * 100);
+// Populate seller info when converting to JSON
+bookSchema.pre(/^find/, function() {
+  if (this.options._recursed) return;
+  this.populate({
+    path: 'seller',
+    select: 'name email phone'
+  });
 });
 
 const Book = mongoose.model("Book", bookSchema);

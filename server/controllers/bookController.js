@@ -1,49 +1,45 @@
 import Book from "../models/Book.js";
 
-// @desc    Create a new bundle listing (Requires Login)
+// @desc    Create a new book listing
 // @route   POST /api/books
 export const createBook = async (req, res) => {
   try {
-    // 1. Destructure the new bundle-specific fields
     const { 
-      bundleTitle, 
-      location, 
-      bookList, 
+      title, 
+      author, 
+      category, 
       price, 
-      originalPrice, 
-      grade, 
       condition, 
       description, 
-      image 
+      image,
+      location
     } = req.body;
 
-    // 2. Create the record with the bundle data
     const book = await Book.create({
-      bundleTitle,
-      location,
-      bookList,
+      title,
+      author,
+      category,
       price,
-      originalPrice,
-      grade,
       condition,
       description,
       image,
-      sellerId: req.user._id,
+      location,
+      seller: req.user._id,
     });
 
-    res.status(201).json(book);
+    const populatedBook = await book.populate('seller', 'name email phone');
+    res.status(201).json(populatedBook);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Get all unsold bundles (Public)
+// @desc    Get all unsold books
 // @route   GET /api/books
 export const getBooks = async (req, res) => {
   try {
-    // 3. IMPORTANT: Populate 'phone' so the WhatsApp button works!
     const books = await Book.find({ isSold: false })
-      .populate("sellerId", "name email phone"); 
+      .populate("seller", "name email phone");
     
     res.json(books);
   } catch (error) {
@@ -51,34 +47,42 @@ export const getBooks = async (req, res) => {
   }
 };
 
-// @desc    Get a single bundle by ID (Public)
+// @desc    Get a single book by ID
+// @route   GET /api/books/:id
 export const getBookById = async (req, res) => {
-  const book = await Book.findById(req.params.id).populate("sellerId", "name phone");
-  if (book) {
-    res.json(book);
-  } else {
-    res.status(404).json({ message: "Book not found" });
+  try {
+    const book = await Book.findById(req.params.id)
+      .populate("seller", "name email phone");
+    
+    if (book) {
+      res.json(book);
+    } else {
+      res.status(404).json({ message: "Book not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Update a bundle
+// @desc    Update a book
+// @route   PUT /api/books/:id
 export const updateBook = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: "Bundle not found" });
+      return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.sellerId.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: "Not authorized" });
+    if (book.seller.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized to update this book" });
     }
 
     const updatedBook = await Book.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
-    );
+    ).populate('seller', 'name email phone');
 
     res.json(updatedBook);
   } catch (error) {
@@ -86,17 +90,18 @@ export const updateBook = async (req, res) => {
   }
 };
 
-// @desc    Delete a bundle
+// @desc    Delete a book
+// @route   DELETE /api/books/:id
 export const deleteBook = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: "Bundle not found" });
+      return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.sellerId.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: "Not authorized" });
+    if (book.seller.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized to delete this book" });
     }
 
     await book.deleteOne();
