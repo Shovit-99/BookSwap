@@ -1,8 +1,4 @@
 import mongoose from "mongoose";
-import dns from "node:dns";
-
-// 1. Force Node to use Google's DNS instead of your system's DNS
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const connectDB = async () => {
   try {
