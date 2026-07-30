@@ -1,13 +1,9 @@
-import dns from "node:dns";
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
-
-
-import bookRoutes from "./routes/bookRoutes.js";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js"; 
+import bookRoutes from "./routes/bookRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
@@ -17,7 +13,12 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+// Configure CORS to handle both local development and your deployed frontend URL
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  credentials: true
+}));
 
 // --- ROUTES ---
 app.use("/api/auth", authRoutes); 
