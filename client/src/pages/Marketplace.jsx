@@ -26,25 +26,25 @@ const Marketplace = ({ searchQuery }) => {
     const title = (book.title || '').toLowerCase();
     const author = (book.author || '').toLowerCase();
     const category = (book.category || '').toLowerCase();
-    
-    return title.includes(safeSearchQuery) || 
-           author.includes(safeSearchQuery) || 
-           category.includes(safeSearchQuery);
+
+    return title.includes(safeSearchQuery) ||
+      author.includes(safeSearchQuery) ||
+      category.includes(safeSearchQuery);
   });
 
   return (
     <div className="min-h-screen premium-bg font-sans pb-20">
-      
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-[#050810] py-20 px-6 border-b border-slate-800/50">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#cfa168]/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#b28347]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#b28347]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            
+
             {/* Left Content */}
             <div className="space-y-8">
               <div>

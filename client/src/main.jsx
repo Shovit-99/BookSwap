@@ -2,6 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import axios from 'axios'
+
+// Set global Axios base URL
+// Uses environment variable if present, otherwise defaults to production Render URL
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://bookswap-backend-7daz.onrender.com';
+// Allow credentials (cookies) to be sent with cross-origin requests
+axios.defaults.withCredentials = true;
 
 import React from 'react'
 
