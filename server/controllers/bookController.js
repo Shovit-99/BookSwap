@@ -12,7 +12,8 @@ export const createBook = async (req, res) => {
       condition, 
       description, 
       image,
-      location
+      location,
+      includedBooks
     } = req.body;
 
     const book = await Book.create({
@@ -24,6 +25,7 @@ export const createBook = async (req, res) => {
       description,
       image,
       location,
+      includedBooks,
       seller: req.user._id,
     });
 
@@ -74,7 +76,7 @@ export const updateBook = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.seller.toString() !== req.user._id.toString()) {
+    if ((book.seller._id || book.seller).toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: "Not authorized to update this book" });
     }
 
@@ -100,7 +102,7 @@ export const deleteBook = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.seller.toString() !== req.user._id.toString()) {
+    if ((book.seller._id || book.seller).toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: "Not authorized to delete this book" });
     }
 

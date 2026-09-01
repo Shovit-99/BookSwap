@@ -31,107 +31,97 @@ const MyListings = () => {
   }, [user]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this bundle? This cannot be undone.')) {
+    if (window.confirm('Are you sure you want to delete this listing? This cannot be undone.')) {
       try {
         const config = {
           headers: { Authorization: `Bearer ${user.token}` },
         };
         await axios.delete(`/api/books/${id}`, config);
         
-        // Remove the deleted book from the UI instantly
         setMyBooks(myBooks.filter((book) => book._id !== id));
-        toast.success('Bundle removed successfully');
+        toast.success('Listing removed successfully');
       } catch (err) {
-        toast.error(err.response?.data?.message || 'Failed to delete bundle');
+        toast.error(err.response?.data?.message || 'Failed to delete listing');
       }
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen premium-bg flex flex-col justify-center items-center">
-        <div className="animate-pulse text-2xl font-bold text-[#cfa168]">Loading your dashboard...</div>
+      <div className="min-h-screen bg-brand-cream flex flex-col justify-center items-center">
+        <div className="w-12 h-12 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen premium-bg py-12 px-6 font-sans pb-24">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-brand-cream py-12 px-6 font-sans pb-24">
+      <div className="max-w-7xl mx-auto pt-16">
         
-        <Link to="/profile" className="inline-flex items-center text-slate-400 hover:text-[#cfa168] mb-8 font-semibold transition-colors">
+        <Link to="/profile" className="inline-flex items-center text-brand-black/60 hover:text-brand-blue mb-8 font-bold transition-colors">
           ← Back to Profile
         </Link>
 
         {/* Page Header */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-black/5 pb-6">
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight mb-2">
+            <h1 className="text-4xl md:text-5xl font-black text-brand-black tracking-tight mb-2">
               My Active Listings
             </h1>
-            <p className="text-slate-400">
-              Manage the book bundles you are currently selling to Dehradun students.
+            <p className="text-brand-black/60 font-medium text-lg">
+              Manage the book bundles you are currently selling to the community.
             </p>
           </div>
           
-          <Link to="/add-book" className="premium-btn px-6 py-3 rounded-xl shadow-lg shadow-[#cfa168]/10 inline-flex items-center gap-2 whitespace-nowrap">
-            <span>+ Add New Bundle</span>
+          <Link to="/add-book" className="px-8 py-4 bg-brand-black text-white hover:bg-brand-blue font-bold rounded-full transition-transform hover:-translate-y-1 shadow-xl whitespace-nowrap">
+            + Add New Listing
           </Link>
         </div>
 
         {/* Empty State */}
         {myBooks.length === 0 ? (
-          <div className="premium-glass-card border border-dashed border-slate-700 rounded-[2.5rem] p-16 flex flex-col items-center justify-center text-center">
-            <div className="w-24 h-24 bg-[#cfa168]/10 text-[#cfa168] rounded-full flex items-center justify-center text-4xl mb-6">
-              📚
-            </div>
-            <h2 className="text-2xl font-bold text-white mb-2">No Active Bundles</h2>
-            <p className="text-slate-400 max-w-md mb-8">
-              You haven't listed any study materials yet. Start selling your old books to help junior students save money!
+          <div className="bg-white border border-dashed border-black/20 rounded-[3rem] p-16 flex flex-col items-center justify-center text-center">
+            <div className="text-6xl mb-6">📚</div>
+            <h2 className="text-3xl font-black text-brand-black mb-4">No Active Listings</h2>
+            <p className="text-brand-black/60 font-medium max-w-md mb-8 text-lg">
+              You haven't listed any books yet. Start selling your old books to help others and earn!
             </p>
-            <Link to="/add-book" className="premium-btn px-8 py-4 rounded-xl shadow-lg shadow-[#cfa168]/20">
+            <Link to="/add-book" className="px-8 py-4 bg-brand-blue text-white font-bold rounded-full shadow-lg hover:scale-105 transition-transform">
               Create Your First Listing
             </Link>
           </div>
         ) : (
-          
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {myBooks.map((book) => (
-              <div key={book._id} className="premium-glass-card rounded-2xl p-5 flex flex-col h-full group hover:border-[#cfa168]/30 transition-all">
+              <div key={book._id} className="bg-white rounded-3xl p-5 flex flex-col h-full group hover:-translate-y-1 transition-transform border border-black/5 shadow-sm">
                 
                 {/* Abstract Book Cover Area */}
-                <div className="bg-[#0a0f1c] border border-[#cfa168]/20 rounded-xl p-6 h-48 flex flex-col justify-center items-center relative overflow-hidden mb-5">
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-[#cfa168]/90 text-[#050810] text-[10px] font-black px-2.5 py-1 rounded-full shadow-sm">
-                      Class {book.grade}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-black text-white leading-tight capitalize text-center z-10 group-hover:text-[#cfa168] transition-colors">
+                <div className="bg-brand-cream border border-black/5 rounded-2xl p-6 h-48 flex flex-col justify-center items-center relative overflow-hidden mb-5">
+                  <h3 className="text-xl font-black text-brand-black leading-tight text-center z-10 group-hover:text-brand-blue transition-colors line-clamp-3">
                     {book.title}
                   </h3>
-                  <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-[#cfa168]/20 rounded-full blur-xl group-hover:bg-[#cfa168]/40 transition-colors"></div>
+                  <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-brand-coral/20 rounded-full blur-2xl group-hover:bg-brand-blue/20 transition-colors"></div>
                 </div>
 
                 {/* Details */}
                 <div className="flex-grow">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Asking Price</p>
+                  <p className="text-xs text-brand-black/50 font-bold uppercase tracking-widest mb-1">Asking Price</p>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-2xl font-black text-white">₹{book.price}</span>
-                    <span className="text-sm text-slate-500 line-through font-medium">₹{book.originalPrice || book.price * 3}</span>
+                    <span className="text-3xl font-black text-brand-black">₹{book.price}</span>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-700/50">
+                <div className="grid grid-cols-2 gap-3 pt-5 border-t border-black/5">
                   <Link 
                     to={`/book/${book._id}`}
-                    className="bg-slate-800 text-slate-300 text-center py-2.5 rounded-lg text-sm font-bold hover:bg-slate-700 hover:text-white transition-colors border border-slate-700"
+                    className="bg-brand-cream text-brand-black text-center py-3 rounded-xl font-bold hover:bg-brand-black hover:text-white transition-colors"
                   >
                     View
                   </Link>
                   <button 
                     onClick={() => handleDelete(book._id)}
-                    className="bg-red-500/10 text-red-400 text-center py-2.5 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-colors border border-red-500/20"
+                    className="bg-red-50 text-red-500 text-center py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-colors"
                   >
                     Delete
                   </button>

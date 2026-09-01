@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../components/Logo';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -30,34 +31,29 @@ const Login = () => {
     }
   };
 
-
-
   return (
-    <div className="min-h-screen premium-bg flex items-center justify-center relative overflow-hidden py-12 px-6">
-      {/* Background animations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#cfa168]/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#b28347]/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-      </div>
+    <div className="min-h-screen bg-brand-cream flex items-center justify-center relative overflow-hidden py-12 px-6 font-sans">
+      
+      {/* Decorative Elements */}
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-brand-blue/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-brand-coral/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="relative z-10 w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-black text-white mb-2 tracking-tight">
-            Book<span className="premium-gradient-text">Swap</span>
-          </h1>
-          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Welcome Back</h2>
-          <p className="text-slate-400 text-lg">
+        <div className="flex flex-col items-center text-center mb-10">
+          <Logo className="w-16 h-16 mb-6" textClassName="text-3xl" />
+          <h2 className="text-4xl font-black text-brand-black mb-2 tracking-tight">Welcome Back</h2>
+          <p className="text-brand-black/60 font-medium text-lg">
             Log in to continue your book adventure
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="premium-glass-card rounded-3xl p-8 shadow-2xl">
+        <div className="bg-white rounded-3xl p-8 shadow-xl border border-black/5">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email Input */}
             <div>
-              <label className="block text-sm font-bold text-slate-300 uppercase tracking-widest mb-3">
+              <label className="block text-sm font-bold text-brand-black mb-2">
                 Email Address
               </label>
               <input 
@@ -67,17 +63,17 @@ const Login = () => {
                 placeholder="you@example.com" 
                 value={formData.email} 
                 onChange={handleChange} 
-                className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-5 py-3.5 rounded-lg outline-none focus:border-[#cfa168]/50 focus:ring-2 focus:ring-[#cfa168]/20 transition-all font-medium placeholder:text-slate-500" 
+                className="w-full bg-brand-cream/50 border border-black/10 text-brand-black px-5 py-3.5 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all font-medium placeholder:text-brand-black/40" 
               />
             </div>
 
             {/* Password Input */}
             <div>
-              <div className="flex justify-between items-center mb-3">
-                <label className="block text-sm font-bold text-slate-300 uppercase tracking-widest">
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-bold text-brand-black">
                   Password
                 </label>
-                <Link to="/forgot-password" className="text-sm font-bold text-[#cfa168] hover:text-[#fbe5b8] transition-colors">
+                <Link to="/forgot-password" className="text-sm font-bold text-brand-blue hover:text-brand-blue/80 transition-colors">
                   Forgot?
                 </Link>
               </div>
@@ -88,7 +84,7 @@ const Login = () => {
                 placeholder="••••••••" 
                 value={formData.password} 
                 onChange={handleChange} 
-                className="w-full bg-slate-900/50 border border-slate-700/50 text-white px-5 py-3.5 rounded-lg outline-none focus:border-[#cfa168]/50 focus:ring-2 focus:ring-[#cfa168]/20 transition-all font-medium placeholder:text-slate-500" 
+                className="w-full bg-brand-cream/50 border border-black/10 text-brand-black px-5 py-3.5 rounded-xl outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all font-medium placeholder:text-brand-black/40" 
               />
             </div>
 
@@ -96,37 +92,37 @@ const Login = () => {
             <button 
               type="submit" 
               disabled={isLoading}
-              className={`w-full py-3.5 rounded-lg text-lg transition-all flex justify-center items-center gap-2 tracking-widest ${
+              className={`w-full py-4 rounded-xl text-lg font-bold transition-all flex justify-center items-center gap-2 ${
                 isLoading 
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                  : 'premium-btn'
+                  ? 'bg-brand-black/10 text-brand-black/40 cursor-not-allowed'
+                  : 'bg-brand-black text-white hover:bg-brand-blue shadow-md hover:shadow-xl hover:-translate-y-1'
               }`}
             >
-              {isLoading ? '🔄 Signing in...' : '✨ Log In'}
+              {isLoading ? 'Signing in...' : 'Log In'}
             </button>
           </form>
 
           {/* Divider */}
           <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700/50"></div>
+              <div className="w-full border-t border-black/10"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-900/80 text-slate-400">or</span>
+            <div className="relative flex justify-center text-sm font-bold">
+              <span className="px-4 bg-white text-brand-black/40">or</span>
             </div>
           </div>
 
           {/* Sign Up Link */}
-          <p className="text-center text-slate-400">
+          <p className="text-center text-brand-black/60 font-medium">
             Don't have an account?{' '}
-            <Link to="/register" className="font-bold text-[#cfa168] hover:text-[#fbe5b8] transition-colors">
+            <Link to="/register" className="font-black text-brand-black hover:text-brand-blue transition-colors">
               Sign up here
             </Link>
           </p>
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-500 text-sm mt-8">
+        <p className="text-center text-brand-black/40 text-sm mt-8 font-medium">
           Protected by enterprise-grade security
         </p>
       </div>

@@ -9,9 +9,14 @@ const bookSchema = new mongoose.Schema(
     },
     author: { 
       type: String, 
-      required: true, 
       trim: true 
     },
+    includedBooks: [
+      {
+        title: { type: String, required: true },
+        author: { type: String, required: true }
+      }
+    ],
     category: { 
       type: String, 
       required: true,

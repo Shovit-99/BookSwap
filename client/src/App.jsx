@@ -12,6 +12,10 @@ import Landing from './pages/Landing';
 import { Toaster } from 'react-hot-toast';
 import BookDetails from './pages/BookDetails';
 
+const ProtectedRoute = ({ children, userInfo }) => {
+  return userInfo ? children : <Navigate to="/login" />;
+};
+
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [userInfo, setUserInfo] = useState(() => {
@@ -20,16 +24,12 @@ function App() {
   });
 
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    // Removed dark mode injection for the new cream editorial theme
   }, []);
-
-  const ProtectedRoute = ({ children }) => {
-    return userInfo ? children : <Navigate to="/login" />;
-  };
 
   return (
     <Router>
-      <div className="min-h-screen bg-black text-white font-sans">
+      <div className="min-h-screen bg-brand-cream text-brand-black font-sans">
         <Toaster position="top-center" reverseOrder={false} />
         
         <Routes>
@@ -70,7 +70,7 @@ function App() {
             element={
               <>
                 <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} userInfo={userInfo} setUserInfo={setUserInfo} />
-                <ProtectedRoute><AddBook /></ProtectedRoute>
+                <ProtectedRoute userInfo={userInfo}><AddBook /></ProtectedRoute>
               </>
             }
           />
@@ -80,7 +80,7 @@ function App() {
             element={
               <>
                 <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} userInfo={userInfo} setUserInfo={setUserInfo} />
-                <ProtectedRoute><MyListings /></ProtectedRoute>
+                <ProtectedRoute userInfo={userInfo}><MyListings /></ProtectedRoute>
               </>
             }
           />
@@ -90,7 +90,7 @@ function App() {
             element={
               <>
                 <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} userInfo={userInfo} setUserInfo={setUserInfo} />
-                <ProtectedRoute><Profile /></ProtectedRoute>
+                <ProtectedRoute userInfo={userInfo}><Profile /></ProtectedRoute>
               </>
             }
           />

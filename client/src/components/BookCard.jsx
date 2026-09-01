@@ -12,79 +12,77 @@ const BookCard = ({ book }) => {
 
   return (
     <div
-      className="relative group h-[420px] cursor-pointer"
+      className="relative group h-full flex flex-col cursor-pointer premium-card overflow-hidden p-0"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#cfa168]/10 via-[#9c6a30]/10 to-[#cfa168]/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      {/* Card */}
-      <div className="relative premium-glass-card rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-500 hover:border-[#cfa168]/40 hover:shadow-lg hover:shadow-[#cfa168]/10 hover:-translate-y-1">
-
-        {/* Image Section */}
-        <div className="relative h-48 bg-[#0a0f1c] border-b border-[#cfa168]/20 flex items-center justify-center overflow-hidden shrink-0">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-40 h-40 bg-[#cfa168]/30 rounded-full -translate-x-20 -translate-y-20 group-hover:scale-150 transition-transform duration-700" />
-            <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#b28347]/30 rounded-full translate-x-16 translate-y-16 group-hover:scale-125 transition-transform duration-700" />
-          </div>
-
-          {/* Book Icon */}
-          <div className="relative z-10 text-center transform transition-all duration-500 group-hover:scale-110 drop-shadow-xl">
-            <span className="text-6xl" style={{ filter: 'sepia(1) hue-rotate(10deg) saturate(2)' }}>📖</span>
-          </div>
-
-          {/* Price Badge */}
-          <div className="absolute top-3 right-3 bg-[#b28347]/90 text-[#050810] px-3 py-1.5 rounded-lg text-sm font-black border border-[#fbe5b8]/30 backdrop-blur-md">
-            ₹{book.price}
-          </div>
+      {/* Image Section */}
+      <div className="relative h-56 bg-brand-cream flex items-center justify-center overflow-hidden shrink-0 group-hover:bg-brand-cream/80 transition-colors">
+        {/* Book Icon / Placeholder Image */}
+        <div className="relative z-10 text-center transform transition-transform duration-500 group-hover:scale-110 drop-shadow-md">
+          <span className="text-7xl">📖</span>
         </div>
 
-        {/* Content Section */}
-        <div className="flex flex-col flex-grow p-4 space-y-3">
-          {/* Title */}
-          <div>
-            <h3 className="font-black text-white text-sm leading-tight group-hover:text-[#cfa168] transition-colors line-clamp-2">
-              {book.title}
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
+        {/* Price Badge */}
+        <div className="absolute top-4 right-4 bg-white text-brand-black px-4 py-1.5 rounded-full text-sm font-black border border-black/5 shadow-sm z-20">
+          ₹{book.price}
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="flex flex-col flex-grow p-6 space-y-4">
+        {/* Title */}
+        <div>
+          <h3 className="font-black text-brand-black text-lg leading-tight group-hover:text-brand-blue transition-colors line-clamp-2">
+            {book.title}
+          </h3>
+          {book.includedBooks && book.includedBooks.length > 0 ? (
+            <p className="text-sm font-bold text-brand-blue mt-1">
+              Bundle of {book.includedBooks.length} Books
+            </p>
+          ) : (
+            <p className="text-sm font-medium text-brand-black/60 mt-1">
               by {book.author}
             </p>
-          </div>
+          )}
+        </div>
 
-          {/* Info Tags */}
-          <div className="flex gap-2 flex-wrap text-xs">
-            <span className="px-2 py-1 bg-[#cfa168]/20 text-[#fbe5b8] rounded border border-[#cfa168]/30">
-              {book.category}
+        {/* Info Tags */}
+        <div className="flex gap-2 flex-wrap text-xs font-bold">
+          {book.includedBooks && book.includedBooks.length > 0 && (
+            <span className="px-3 py-1.5 bg-brand-blue text-white rounded-full">
+              Bundle
             </span>
-            <span className={`px-2 py-1 rounded border ${
-              book.condition === 'Like New' ? 'bg-[#cfa168]/30 border-[#cfa168]/50 text-white' :
-              book.condition === 'Good' ? 'bg-blue-500/20 border-blue-500/30 text-blue-200' :
-              'bg-slate-700/50 border-slate-600 text-slate-300'
-            }`}>
-              {book.condition}
-            </span>
-          </div>
+          )}
+          <span className="px-3 py-1.5 bg-brand-cream text-brand-black/80 rounded-full">
+            {book.category}
+          </span>
+          <span className={`px-3 py-1.5 rounded-full ${
+            book.condition === 'Like New' ? 'bg-brand-blue/10 text-brand-blue' :
+            book.condition === 'Good' ? 'bg-brand-green/10 text-brand-green' :
+            'bg-brand-black/5 text-brand-black/60'
+          }`}>
+            {book.condition}
+          </span>
+        </div>
 
-          {/* Seller Info */}
-          <div className="flex items-center gap-2 pt-2 border-t border-slate-700/50">
-            <div className="w-6 h-6 bg-gradient-to-br from-[#cfa168] to-[#9c6a30] rounded-full flex items-center justify-center">
-              <span className="text-[#050810] text-xs font-black">
-                {book.seller?.name?.charAt(0) || 'S'}
-              </span>
+        {/* Seller Info & CTA */}
+        <div className="mt-auto pt-6 flex items-center justify-between border-t border-black/5">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand-black rounded-full flex items-center justify-center text-white text-xs font-bold">
+              {book.seller?.name?.charAt(0) || 'S'}
             </div>
-            <span className="text-xs text-slate-400">
+            <span className="text-sm font-bold text-brand-black/70">
               {book.seller?.name || 'Seller'}
             </span>
           </div>
 
-          {/* CTA Button */}
           <button
             onClick={handleWhatsApp}
-            className="mt-auto w-full premium-btn py-2.5 rounded-lg text-sm flex items-center justify-center gap-2"
+            className="w-10 h-10 rounded-full bg-brand-cream flex items-center justify-center hover:bg-brand-blue hover:text-white transition-colors group/btn border border-black/5"
+            title="Chat on WhatsApp"
           >
-            <span>💬</span>
-            <span>Chat on WhatsApp</span>
+            <span className="text-lg group-hover/btn:scale-110 transition-transform">💬</span>
           </button>
         </div>
       </div>

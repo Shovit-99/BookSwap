@@ -1,538 +1,329 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import './Landing.css';
+import { motion, AnimatePresence } from 'framer-motion';
+import Logo from '../components/Logo';
 
 const Landing = () => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
-  const heroRef = useRef(null);
-
-  const { scrollYProgress } = useScroll();
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
-
-  // ---------- Cursor parallax ----------
-  const handleMouseMove = useCallback((e) => {
-    if (!heroRef.current) return;
-    const rect = heroRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    setMousePos({ x, y });
-
-    heroRef.current.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-    heroRef.current.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-  }, []);
-
-  // ---------- Nav scroll effect ----------
-  useEffect(() => {
-    const handleScroll = () => {
-      setNavScrolled(window.scrollY > 60);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // ---------- Scroll reveal observer ----------
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    const elements = document.querySelectorAll('.reveal');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => elements.forEach((el) => observer.unobserve(el));
-  }, []);
-
-
-
-  // ---------- Parallax transform helper ----------
-  const getParallaxStyle = (depth) => ({
-    transform: `translate3d(${mousePos.x * depth * 30}px, ${mousePos.y * depth * 20}px, 0)`,
-  });
-
-  // ---------- Framer Motion Variants ----------
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 60 },
-    visible: (i = 0) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, delay: i * 0.15, ease: [0.25, 0.46, 0.45, 0.94] },
-    }),
-  };
-
-  const staggerContainer = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-    },
-  };
-
-  const scaleIn = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: (i = 0) => ({
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.6, delay: i * 0.1, ease: 'easeOut' },
-    }),
-  };
-
-  // ---------- Floating Book Covers Data ----------
-  const bookCovers = [
-    { 
-      Icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbe5b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"/></svg>,
-      color: '#b33939', title: 'The Great Gatsby', rotation: -15, top: '15%', left: '5%', depth: 1.5 
-    },
-    { 
-      Icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbe5b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3"/><path d="M14 17.75V21"/><path d="M7 18a6 6 0 0 0 3.84-10.61"/></svg>,
-      color: '#218c53', title: 'To Kill a Mockingbird', rotation: 12, top: '25%', right: '8%', depth: -1.2 
-    },
-    { 
-      Icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbe5b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>,
-      color: '#1e3799', title: '1984', rotation: -8, top: '60%', left: '3%', depth: 1.8 
-    },
-    { 
-      Icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbe5b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
-      color: '#e58e26', title: 'Pride & Prejudice', rotation: 20, top: '55%', right: '5%', depth: -0.8 
-    },
-    { 
-      Icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbe5b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>,
-      color: '#6a0dad', title: 'The Alchemist', rotation: -25, top: '40%', left: '10%', depth: 1.0 
-    },
-    { 
-      Icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbe5b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>,
-      color: '#006266', title: 'Atomic Habits', rotation: 15, top: '70%', right: '12%', depth: -1.5 
-    },
-  ];
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('mission');
 
   // ---------- FAQ Data ----------
   const faqs = [
     {
       q: 'How do I list my books for trading?',
-      a: 'Simply create an account, click "Add Book", fill in details like title, author, condition, and upload photos. Your book will be live on the marketplace instantly for other readers to discover.',
+      a: 'Simply create an account, click "Add Book", fill in details like title, author, condition, and upload photos. Your book will be live on the marketplace instantly.',
     },
     {
       q: 'Is BookSwap free to use?',
-      a: 'Yes! BookSwap is completely free. We believe in making books accessible to everyone. There are no listing fees, no hidden charges — just connect and swap.',
+      a: 'Yes! BookSwap is completely free. There are no listing fees, no hidden charges — just connect and swap.',
     },
     {
       q: 'How does the swapping process work?',
-      a: 'Browse the marketplace, find a book you love, and send a swap request to the owner. You can propose trading one of your books in return, or simply purchase it at the listed price.',
+      a: 'Browse the marketplace, find a book you love, and send a swap request to the owner. You can propose trading one of your books in return.',
     },
     {
       q: 'What condition should my books be in?',
-      a: 'We accept books in any readable condition. When listing, honestly describe the condition — New, Like New, Good, or Fair — so buyers know exactly what to expect.',
-    },
-    {
-      q: 'Can I track my swap history?',
-      a: 'Absolutely! Your dashboard shows a complete history of all swaps, purchases, and listings. You\'ll also get real-time notifications for swap requests and messages.',
+      a: 'We accept books in any readable condition. Honestly describe the condition — New, Like New, Good, or Fair.',
     },
   ];
 
-
-
-  // ---------- Genre tags for visual flair ----------
-  const genres = ['Fiction', 'Sci-Fi', 'Romance', 'Mystery', 'Self-Help', 'History', 'Fantasy', 'Biography', 'Poetry', 'Thriller'];
+  const bookImages = [
+    "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1629196914595-df63283f5139?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1614113489855-66422ad300a4?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1588666309990-d68f08e3d4a6?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=600&auto=format&fit=crop"
+  ];
 
   return (
-    <div className="landing-page">
+    <div className="bg-brand-cream text-brand-black min-h-screen font-sans">
+      
       {/* ========== Navbar ========== */}
-      <motion.nav
-        className={`landing-nav ${navScrolled ? 'scrolled' : ''}`}
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <div className="landing-nav-inner">
-          <Link to="/" className="landing-logo">
-            BookSwap
-          </Link>
+      <div className="absolute top-4 inset-x-0 z-50 px-4 md:px-8 font-sans">
+        <nav className="bg-white border border-black/5 shadow-sm max-w-7xl mx-auto rounded-xl">
+          <div className="px-6 py-4 flex justify-between items-center">
+            <Logo className="w-10 h-10" />
 
-          <ul className={`landing-nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-            <li><a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How It Works</a></li>
-            <li><a href="#faq" onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
-            <li>
-              <Link
-                to="/login"
-                className="landing-nav-login"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Log In
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/register"
-                className="landing-nav-cta"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Get Started →
-              </Link>
-            </li>
-          </ul>
-
-          <button
-            className="landing-nav-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </div>
-      </motion.nav>
-
-      {/* ========== Hero Section ========== */}
-      <motion.section
-        className="landing-hero"
-        ref={heroRef}
-        onMouseMove={handleMouseMove}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-      >
-        {/* Background */}
-        <div className="landing-hero-bg">
-          <div className="landing-orb landing-orb-1"></div>
-          <div className="landing-orb landing-orb-2"></div>
-          <div className="landing-orb landing-orb-3"></div>
-        </div>
-
-        <div className="landing-cursor-spotlight"></div>
-        <div className="landing-grid-overlay"></div>
-
-        {/* Floating Book Covers */}
-        <div className="landing-floating-books">
-          {bookCovers.map((book, idx) => {
-            const IconComponent = book.Icon;
-            return (
-              <motion.div
-                key={idx}
-                className="landing-floating-book"
-                style={{
-                  ...getParallaxStyle(book.depth),
-                  top: book.top,
-                  left: book.left,
-                  right: book.right,
-                }}
-                initial={{ opacity: 0, scale: 0, rotate: book.rotation * 2 }}
-                animate={{ opacity: 1, scale: 1, rotate: book.rotation }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.5 + idx * 0.2,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
-              >
-                <div
-                  className="landing-book-3d"
-                  style={{ '--book-color': book.color }}
-                >
-                  <div className="landing-book-cover">
-                    <div className="landing-book-clip"></div>
-                    <div className="landing-book-icon">
-                      <IconComponent />
-                    </div>
-                    <span className="landing-book-title">{book.title}</span>
-                  </div>
-                  <div className="landing-book-spine-3d"></div>
-                  <div className="landing-book-pages"></div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Floating Genre Tags */}
-        <div className="landing-genre-tags">
-          {genres.map((genre, idx) => (
-            <motion.span
-              key={genre}
-              className="landing-genre-tag"
-              style={{
-                top: `${15 + (idx % 5) * 17}%`,
-                [idx % 2 === 0 ? 'left' : 'right']: `${2 + (idx % 4) * 5}%`,
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 0.6, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.5 + idx * 0.1 }}
-            >
-              {genre}
-            </motion.span>
-          ))}
-        </div>
-
-        {/* Hero Content */}
-        <motion.div
-          className="landing-hero-content"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div className="landing-hero-badge" variants={fadeInUp} custom={0}>
-            <span className="landing-hero-badge-dot"></span>
-            📚 The #1 Book Trading Platform
-          </motion.div>
-
-          <motion.h1 className="landing-hero-title" variants={fadeInUp} custom={1}>
-            <span className="landing-hero-title-chrome">Trade Books.</span>
-            <span className="landing-hero-title-accent">Share Stories.</span>
-          </motion.h1>
-
-          <motion.p className="landing-hero-subtitle" variants={fadeInUp} custom={2}>
-            Your bookshelf has limits. Your reading journey shouldn't.
-          </motion.p>
-
-          <motion.p className="landing-hero-subtitle-bold" variants={fadeInUp} custom={3}>
-            Join thousands of readers swapping, discovering, and connecting on BookSwap.
-          </motion.p>
-
-          <motion.div className="landing-hero-buttons" variants={fadeInUp} custom={4}>
-            <Link to="/register" className="landing-btn-primary">
-              Start Swapping Books →
-            </Link>
-            <Link to="/login" className="landing-btn-secondary">
-              Log In to Your Account
-            </Link>
-          </motion.div>
-
-          {/* Book stack visual under CTA */}
-          <motion.div
-            className="landing-hero-book-stack"
-            variants={fadeInUp}
-            custom={5}
-          >
-            <div className="landing-book-stack-visual">
-              {['📕', '📗', '📘', '📙', '📓'].map((emoji, i) => (
-                <motion.span
-                  key={i}
-                  className="landing-stack-book"
-                  initial={{ x: -50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 2 + i * 0.15, duration: 0.5 }}
-                >
-                  {emoji}
-                </motion.span>
-              ))}
-              <span className="landing-stack-label">10,000+ books already listed</span>
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#home" className="text-brand-black hover:text-brand-blue font-bold text-sm transition-colors flex items-center gap-1">Home <span className="text-xs">▼</span></a>
+              <a href="#about" className="text-brand-black/70 hover:text-brand-blue font-bold text-sm transition-colors">About</a>
+              <Link to="/marketplace" className="text-brand-black/70 hover:text-brand-blue font-bold text-sm transition-colors">Shop</Link>
+              <a href="#pages" className="text-brand-black/70 hover:text-brand-blue font-bold text-sm transition-colors flex items-center gap-1">Pages <span className="text-xs">▼</span></a>
+              <Link to="/profile" className="text-brand-black/70 hover:text-brand-blue font-bold text-sm transition-colors">Cart (0)</Link>
             </div>
-          </motion.div>
+
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex gap-2">
+                <button className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors">
+                   <span className="text-xs">⚙️</span>
+                </button>
+                <button className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors">
+                   <span className="text-xs font-bold">X</span>
+                </button>
+                <button className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors">
+                   <span className="text-xs font-bold text-brand-blue">in</span>
+                </button>
+              </div>
+              <Link to="/marketplace" className="bg-brand-blue text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-brand-blue/90 transition-colors flex items-center gap-2 shadow-md">
+                Find A Book ↗
+              </Link>
+            </div>
+
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-xl font-bold">
+              {mobileMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
+          
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-black/10 p-4 space-y-4">
+              <Link to="/marketplace" className="block text-center font-bold">Shop</Link>
+              <Link to="/login" className="block text-center bg-brand-blue text-white py-2 rounded-lg font-bold w-full">Log In</Link>
+            </div>
+          )}
+        </nav>
+      </div>
+
+      {/* ========== Centered Editorial Hero ========== */}
+      <section className="pt-40 px-6 max-w-7xl mx-auto overflow-hidden text-center relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.8 }}
+          className="z-10 relative"
+        >
+          {/* Removed Avatar per user request */}
+          
+          <p className="text-brand-black font-bold mb-4">
+            Hi, Welcome to <span className="text-brand-blue">BookSwap</span>.
+          </p>
+
+          <h1 className="text-6xl md:text-8xl font-black leading-[1.05] tracking-tight mb-6 max-w-4xl mx-auto">
+            The Ultimate Book Network That Captivates & Inspires.
+          </h1>
+          
+          <p className="text-sm text-brand-black/60 max-w-2xl mx-auto mb-10 font-medium leading-relaxed uppercase tracking-wider">
+            Journey into a world where words weave magic, and tales transcend time. Here, book readers and collectors are not merely traders but architects of imagination.
+          </p>
+          
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link to="/marketplace" className="bg-brand-blue text-white text-sm font-bold px-8 py-3.5 rounded-lg flex items-center gap-2 hover:bg-brand-blue/90 transition-colors shadow-lg">
+              Discover Now ↗
+            </Link>
+            <Link to="/register" className="bg-white text-brand-black text-sm font-bold px-8 py-3.5 rounded-lg border border-black/5 hover:bg-black/5 transition-colors shadow-sm">
+              Let's Swap
+            </Link>
+          </div>
         </motion.div>
-      </motion.section>
 
+        {/* Books Image Grid */}
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mt-20 flex justify-center items-end gap-4 overflow-hidden h-[400px]"
+        >
+          <div className="flex flex-col gap-4 w-40 transform translate-y-12 hover:-translate-y-2 transition-transform duration-500">
+            <img src={bookImages[0]} alt="Book" className="w-full h-56 object-cover rounded-xl shadow-lg border border-black/10" />
+            <img src={bookImages[1]} alt="Book" className="w-full h-48 object-cover rounded-xl shadow-lg border border-black/10" />
+          </div>
+          <div className="flex flex-col gap-4 w-44 transform translate-y-24 hover:-translate-y-2 transition-transform duration-500">
+            <img src={bookImages[2]} alt="Book" className="w-full h-64 object-cover rounded-xl shadow-lg border border-black/10" />
+            <img src={bookImages[3]} alt="Book" className="w-full h-40 object-cover rounded-xl shadow-lg border border-black/10" />
+          </div>
+          <div className="w-72 transform translate-y-8 z-10 hover:-translate-y-4 transition-transform duration-500">
+            <img src={bookImages[4]} alt="Book" className="w-full h-[380px] object-cover rounded-2xl shadow-2xl border-4 border-white" />
+          </div>
+          <div className="flex flex-col gap-4 w-44 transform translate-y-16 hover:-translate-y-2 transition-transform duration-500">
+            <img src={bookImages[5]} alt="Book" className="w-full h-52 object-cover rounded-xl shadow-lg border border-black/10" />
+            <img src={bookImages[6]} alt="Book" className="w-full h-52 object-cover rounded-xl shadow-lg border border-black/10" />
+          </div>
+          <div className="flex flex-col gap-4 w-40 transform translate-y-32 hover:-translate-y-2 transition-transform duration-500">
+            <img src={bookImages[7]} alt="Book" className="w-full h-48 object-cover rounded-xl shadow-lg border border-black/10" />
+            <img src={bookImages[0]} alt="Book" className="w-full h-48 object-cover rounded-xl shadow-lg border border-black/10" />
+          </div>
+        </motion.div>
+      </section>
 
+      {/* ========== Connecting Dark Section ========== */}
+      <section className="bg-brand-black text-white pt-24 pb-32 px-6 relative -mt-[150px] z-20">
+        <div className="max-w-7xl mx-auto">
+          {/* Removed Controls/Arrows per user request */}
 
-      {/* ========== How It Works ========== */}
-      <section className="landing-section" id="how-it-works">
-        <div className="landing-section-inner">
-          <motion.div
-            className="landing-section-header"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="landing-section-label">✦ Simple Process</div>
-            <h2 className="landing-section-title">How It Works</h2>
-            <p className="landing-section-subtitle">
-              Three simple steps to start your book trading journey
-            </p>
-          </motion.div>
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-widest font-bold text-white/50 mb-8">Trusted By Readers World Wide</p>
+            <div className="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale">
+              {/* Dummy partner logos using text for now */}
+              <span className="text-xl font-bold font-serif italic">Vertigo</span>
+              <span className="text-xl font-bold">Sitemark</span>
+              <span className="text-xl font-bold flex items-center gap-1"><span>♣</span> ProNature</span>
+              <span className="text-xl font-bold">umbrella</span>
+              <span className="text-xl font-bold">Snowflake</span>
+            </div>
+          </div>
 
-          <motion.div
-            className="landing-steps-grid"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {[
-              { num: 1, icon: '📸', title: 'List Your Books', desc: 'Snap a photo, add details, and publish your listing in under 60 seconds' },
-              { num: 2, icon: '🔍', title: 'Discover & Match', desc: 'Browse the marketplace or let our smart matching find the perfect swap partner' },
-              { num: 3, icon: '🤝', title: 'Swap & Enjoy', desc: 'Connect with the reader, arrange the swap, and dive into your next great read' },
-            ].map((step, idx) => (
-              <motion.div
-                key={idx}
-                className="landing-step-card"
-                variants={fadeInUp}
-                custom={idx}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+          {/* Large text intro */}
+          <div className="max-w-4xl mx-auto mt-24 mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+              The platform that changes your reading lifetime, the art of book swapping <span className="border-b-2 border-white pb-1">BookSwap</span> path to literary success.
+            </h2>
+          </div>
+
+          {/* Bio/Stats Tabs Layout */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {/* Left Tabs */}
+            <div className="space-y-4">
+              <button 
+                onClick={() => setActiveTab('mission')}
+                className={`w-full text-left px-6 py-4 rounded-xl font-bold border transition-colors ${activeTab === 'mission' ? 'bg-white/10 text-white border-white/10' : 'text-white/50 border-transparent hover:bg-white/5'}`}
               >
-                <div className="landing-step-number">{step.num}</div>
-                <span className="landing-step-icon">{step.icon}</span>
-                <h3 className="landing-step-title">{step.title}</h3>
-                <p className="landing-step-desc">{step.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+                Our Mission
+              </button>
+              <button 
+                onClick={() => setActiveTab('how')}
+                className={`w-full text-left px-6 py-4 rounded-xl font-bold border transition-colors ${activeTab === 'how' ? 'bg-white/10 text-white border-white/10' : 'text-white/50 border-transparent hover:bg-white/5'}`}
+              >
+                How It Works
+              </button>
+              <button 
+                onClick={() => setActiveTab('stats')}
+                className={`w-full text-left px-6 py-4 rounded-xl font-bold border transition-colors ${activeTab === 'stats' ? 'bg-white/10 text-white border-white/10' : 'text-white/50 border-transparent hover:bg-white/5'}`}
+              >
+                Community Stats
+              </button>
+            </div>
+
+            {/* Right Content Area */}
+            <div className="md:col-span-2 bg-[#fbe7f3] rounded-3xl p-8 md:p-12 text-brand-black min-h-[350px]">
+              <AnimatePresence mode="wait">
+                {activeTab === 'mission' && (
+                  <motion.div key="mission" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+                    <div className="flex justify-between items-start mb-6">
+                      <h3 className="text-2xl font-black">Explore Our Mission -</h3>
+                      <span className="text-4xl">✍️</span>
+                    </div>
+                    <p className="text-brand-black/70 font-medium mb-6 leading-relaxed text-sm">
+                      In the grand tapestry of literature, every thread is a story, each color a unique voice. We believe books are meant to be shared, read, and loved by as many people as possible.
+                    </p>
+                    <p className="text-brand-black/70 font-medium leading-relaxed text-sm">
+                      Our mission is to highlight these voices, showcasing the incredible diversity and power of written expression, from bestselling novelists to emerging storytellers, by making books accessible to everyone through swapping.
+                    </p>
+                  </motion.div>
+                )}
+                {activeTab === 'how' && (
+                  <motion.div key="how" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+                    <div className="flex justify-between items-start mb-6">
+                      <h3 className="text-2xl font-black">How It Works -</h3>
+                      <span className="text-4xl">🔄</span>
+                    </div>
+                    <p className="text-brand-black/70 font-medium mb-6 leading-relaxed text-sm">
+                      BookSwap makes it incredibly easy to refresh your library without spending a dime. Once you create an account, you can list the books you've already read.
+                    </p>
+                    <p className="text-brand-black/70 font-medium leading-relaxed text-sm">
+                      Browse the marketplace to find books you want. When you find one, send a swap request to the owner. If they accept, you ship your books to each other and enjoy your new stories!
+                    </p>
+                  </motion.div>
+                )}
+                {activeTab === 'stats' && (
+                  <motion.div key="stats" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+                    <div className="flex justify-between items-start mb-6">
+                      <h3 className="text-2xl font-black">Community Stats -</h3>
+                      <span className="text-4xl">📈</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-6 mt-8">
+                      <div>
+                        <h4 className="text-4xl font-black text-brand-blue mb-2">10k+</h4>
+                        <p className="text-xs font-bold text-brand-black/60 uppercase tracking-wider">Active Swappers</p>
+                      </div>
+                      <div>
+                        <h4 className="text-4xl font-black text-brand-blue mb-2">50k+</h4>
+                        <p className="text-xs font-bold text-brand-black/60 uppercase tracking-wider">Books Swapped</p>
+                      </div>
+                      <div>
+                        <h4 className="text-4xl font-black text-brand-blue mb-2">150+</h4>
+                        <p className="text-xs font-bold text-brand-black/60 uppercase tracking-wider">Countries</p>
+                      </div>
+                      <div>
+                        <h4 className="text-4xl font-black text-brand-blue mb-2">$0</h4>
+                        <p className="text-xs font-bold text-brand-black/60 uppercase tracking-wider">Listing Fees</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </section>
 
-
-
       {/* ========== FAQ Section ========== */}
-      <section className="landing-section" id="faq">
-        <div className="landing-section-inner">
-          <motion.div
-            className="landing-section-header"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="landing-section-label">✦ Common Questions</div>
-            <h2 className="landing-section-title">
-              Frequently Asked Questions
-            </h2>
-            <p className="landing-section-subtitle">
-              Everything you need to know about BookSwap
-            </p>
-          </motion.div>
+      <section id="faq" className="py-32 px-6 bg-brand-cream relative">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tight text-brand-black">Common Questions</h2>
+          </div>
 
-          <div className="landing-faq-list">
+          <div className="space-y-4">
             {faqs.map((faq, idx) => (
-              <motion.div
-                key={idx}
-                className={`landing-faq-item ${
-                  activeFaq === idx ? 'active' : ''
-                }`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-              >
+              <div key={idx} className="bg-white rounded-2xl overflow-hidden border border-black/5 shadow-sm transition-all">
                 <button
-                  className="landing-faq-question"
-                  onClick={() =>
-                    setActiveFaq(activeFaq === idx ? null : idx)
-                  }
+                  className="w-full px-8 py-6 text-left flex justify-between items-center text-xl font-bold text-brand-black focus:outline-none"
+                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
                 >
                   {faq.q}
-                  <motion.span
-                    className="landing-faq-arrow"
-                    animate={{ rotate: activeFaq === idx ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    ↓
-                  </motion.span>
+                  <span className={`transform transition-transform text-2xl ${activeFaq === idx ? 'rotate-180' : ''}`}>↓</span>
                 </button>
                 <AnimatePresence>
                   {activeFaq === idx && (
                     <motion.div
-                      className="landing-faq-answer"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      style={{ overflow: 'hidden' }}
+                      className="px-8 pb-6 text-brand-black/70 font-medium text-lg leading-relaxed"
                     >
-                      <div className="landing-faq-answer-inner">{faq.a}</div>
+                      {faq.a}
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <hr className="landing-divider" />
-
-      {/* ========== CTA Section ========== */}
-      <section className="landing-section landing-cta">
-        <div className="landing-cta-glow"></div>
-        <div className="landing-section-inner" style={{ position: 'relative', zIndex: 1 }}>
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="landing-cta-title">
-              Ready to Reimagine<br />Your Bookshelf?
-            </h2>
-            <p className="landing-cta-subtitle">
-              Join thousands of readers already swapping stories on BookSwap
-            </p>
-            <div className="landing-hero-buttons">
-              <Link to="/register" className="landing-btn-primary">
-                Sign Up Free →
-              </Link>
-              <Link to="/login" className="landing-btn-secondary">
-                I Already Have an Account
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* ========== Footer ========== */}
-      <footer className="landing-footer">
-        <div className="landing-footer-inner">
-          <div className="landing-footer-grid">
-            <div>
-              <Link to="/" className="landing-logo">
-                BookSwap
-              </Link>
-              <p className="landing-footer-brand-desc">
-                The premium marketplace for book lovers. Trade, discover,
-                and connect with readers worldwide.
-              </p>
-              <div className="landing-footer-social">
-                <a href="#" aria-label="Twitter">𝕏</a>
-                <a href="#" aria-label="Instagram">📷</a>
-                <a href="#" aria-label="GitHub">⌨</a>
-                <a href="#" aria-label="LinkedIn">in</a>
-              </div>
+      <footer className="bg-white text-brand-black pt-20 pb-10 px-6 border-t border-black/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-2">
+              <Logo className="w-10 h-10 mb-4" />
+              <p className="text-brand-black/60 max-w-md font-medium text-lg">The premium marketplace for book lovers. Trade, discover, and connect with readers worldwide.</p>
             </div>
-
             <div>
-              <div className="landing-footer-col-title">Product</div>
-              <ul className="landing-footer-links">
-                <li><Link to="/marketplace">Marketplace</Link></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><Link to="/add-book">List a Book</Link></li>
+              <h4 className="font-bold text-xl mb-6">Product</h4>
+              <ul className="space-y-4 font-medium text-brand-black/70">
+                <li><Link to="/marketplace" className="hover:text-brand-blue transition-colors">Marketplace</Link></li>
+                <li><Link to="/add-book" className="hover:text-brand-blue transition-colors">List a Book</Link></li>
+                <li><a href="#faq" className="hover:text-brand-blue transition-colors">FAQ</a></li>
               </ul>
             </div>
-
             <div>
-              <div className="landing-footer-col-title">Company</div>
-              <ul className="landing-footer-links">
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Careers</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Contact</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <div className="landing-footer-col-title">Support</div>
-              <ul className="landing-footer-links">
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="#">Help Center</a></li>
-                <li><a href="#">Community</a></li>
-                <li><a href="#">Report Issue</a></li>
+              <h4 className="font-bold text-xl mb-6">Support</h4>
+              <ul className="space-y-4 font-medium text-brand-black/70">
+                <li><a href="#faq" className="hover:text-brand-blue transition-colors">FAQ</a></li>
+                <li><a href="#" className="hover:text-brand-blue transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-brand-blue transition-colors">Terms of Service</a></li>
               </ul>
             </div>
           </div>
-
-          <div className="landing-footer-bottom">
-            <div className="landing-footer-copyright">
-              © {new Date().getFullYear()} BookSwap. All rights reserved.
-            </div>
-            <div className="landing-footer-bottom-links">
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-              <a href="#">Cookie Policy</a>
+          <div className="border-t border-black/10 pt-8 flex justify-between items-center text-brand-black/50 font-medium">
+            <p>© {new Date().getFullYear()} BookSwap. All rights reserved.</p>
+            <div className="flex gap-4">
+              <span className="cursor-pointer hover:text-brand-blue">𝕏</span>
+              <span className="cursor-pointer hover:text-brand-blue">In</span>
             </div>
           </div>
         </div>

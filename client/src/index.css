@@ -1,83 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-brand-cream: #F5F0E9;
+  --color-brand-black: #171717;
+  --color-brand-blue: #123EB8;
+  --color-brand-coral: #FF6B6B;
+  --color-brand-cyan: #48DBFB;
+  --color-brand-green: #1DD1A1;
+  --color-brand-lavender: #5f27cd;
+  
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+}
 
-@layer components {
-  /* Premium Global Utilities for BookSwap */
-  
-  .premium-bg {
-    @apply bg-[#050810];
-  }
-  
-  .premium-glass-card {
-    background: rgba(15, 20, 40, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  
-  .premium-gradient-text {
-    background: linear-gradient(
-      135deg,
-      #cfa168 0%,
-      #fbe5b8 25%,
-      #b28347 50%,
-      #fbe5b8 75%,
-      #9c6a30 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: goldShine 4s linear infinite;
-  }
-  
-  .premium-btn {
-    background: linear-gradient(
-      135deg,
-      #cfa168 0%,
-      #fbe5b8 25%,
-      #b28347 50%,
-      #fbe5b8 75%,
-      #9c6a30 100%
-    );
-    background-size: 200% auto;
-    color: #050810;
-    font-weight: 800;
-    transition: all 0.3s ease;
-    border: none;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .premium-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.4),
-      transparent
-    );
-    transition: left 0.5s ease;
-  }
-  
-  .premium-btn:hover::before {
-    left: 100%;
-  }
-  
-  .premium-btn:hover {
-    box-shadow: 0 0 20px rgba(207, 161, 104, 0.4);
-    transform: translateY(-2px);
+@layer base {
+  body {
+    background-color: var(--color-brand-cream);
+    color: var(--color-brand-black);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-@keyframes goldShine {
-  to {
-    background-position: 200% center;
+@layer components {
+  .premium-btn-primary {
+    @apply bg-brand-blue text-white px-6 py-3 rounded-full font-bold transition-all inline-flex items-center justify-center hover:-translate-y-1 hover:shadow-lg shadow-brand-blue/30 active:scale-95;
+  }
+  
+  .premium-btn-secondary {
+    @apply bg-transparent text-brand-black border-2 border-brand-black px-6 py-3 rounded-full font-bold transition-all inline-flex items-center justify-center hover:bg-brand-black hover:text-white active:scale-95;
+  }
+
+  .premium-card {
+    @apply bg-white rounded-3xl p-8 shadow-sm border border-black/5 hover:-translate-y-1 transition-transform duration-300;
   }
 }

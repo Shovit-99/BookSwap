@@ -23,89 +23,110 @@ const BookDetails = () => {
   };
 
   if (!book) return (
-    <div className="min-h-screen premium-bg flex items-center justify-center">
-      <div className="animate-pulse text-2xl font-bold text-[#cfa168]">Loading Bundle Details...</div>
+    <div className="min-h-screen bg-brand-cream flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin"></div>
     </div>
   );
 
   return (
-    <div className="min-h-screen premium-bg py-12 px-6 font-sans">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-brand-cream py-12 px-6 font-sans">
+      <div className="max-w-6xl mx-auto pt-10">
         
         {/* Breadcrumb Navigation */}
-        <Link to="/" className="inline-flex items-center text-slate-400 hover:text-[#cfa168] mb-8 font-semibold transition-colors">
+        <Link to="/" className="inline-flex items-center text-brand-black/60 hover:text-brand-blue mb-8 font-bold transition-colors">
           ← Back to Browse
         </Link>
 
         {/* Main Content Card */}
-        <div className="premium-glass-card rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+        <div className="bg-white rounded-[3rem] shadow-xl border border-black/5 overflow-hidden flex flex-col md:flex-row">
           
           {/* Left Side: Visual Abstract Representation */}
-          <div className="md:w-2/5 bg-[#0a0f1c] border-r border-[#cfa168]/20 p-12 flex flex-col justify-center items-center relative overflow-hidden">
+          <div className="md:w-2/5 bg-brand-cream border-r border-black/5 p-12 flex flex-col justify-center items-center relative overflow-hidden">
             <div className="absolute top-8 left-8">
-              <span className="bg-[#cfa168]/90 text-[#050810] text-sm font-black px-4 py-2 rounded-full shadow-sm">
-                Class {book.grade}
+              <span className="bg-white text-brand-black text-sm font-bold px-4 py-2 rounded-full shadow-sm border border-black/5">
+                {book.condition || 'Good'}
               </span>
             </div>
             
             {/* Abstract Book/Bundle Cover */}
-            <div className="w-56 h-72 premium-bg shadow-2xl rounded-r-3xl rounded-l-sm border-l-8 border-[#cfa168] border border-[#cfa168]/30 flex items-center justify-center relative z-10 hover:-translate-y-2 transition-transform duration-500">
-               <div className="text-center px-6">
-                 <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-2">Bundle</p>
-                 <h3 className="text-2xl font-black text-white leading-tight capitalize">
+            <div className="w-64 h-80 bg-brand-blue shadow-2xl rounded-r-3xl rounded-l-sm border-l-8 border-brand-black flex items-center justify-center relative z-10 hover:-translate-y-2 transition-transform duration-500 overflow-hidden">
+               <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent"></div>
+               <div className="text-center px-6 relative z-10">
+                 <p className="text-xs text-white/70 font-bold uppercase tracking-widest mb-2">{book.category || 'Book'}</p>
+                 <h3 className="text-3xl font-black text-white leading-tight capitalize">
                    {book.title}
                  </h3>
+                 {book.includedBooks && book.includedBooks.length > 0 ? (
+                   <p className="text-sm font-bold text-white/90 mt-4">Bundle of {book.includedBooks.length} Books</p>
+                 ) : (
+                   <p className="text-sm font-bold text-white/90 mt-4">by {book.author}</p>
+                 )}
                </div>
             </div>
 
             {/* Soft decorative glow */}
-            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#cfa168]/20 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-brand-blue/10 rounded-full blur-3xl pointer-events-none"></div>
           </div>
 
           {/* Right Side: Details & Action */}
           <div className="md:w-3/5 p-10 lg:p-16 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-start mb-4 gap-4">
-                <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight capitalize">
+                <h1 className="text-4xl md:text-5xl font-black text-brand-black leading-tight tracking-tight capitalize">
                   {book.title}
                 </h1>
-                <span className="bg-[#cfa168] text-[#050810] text-sm font-bold px-4 py-2 rounded-full whitespace-nowrap mt-2">
-                  Save {book.discount || 70}%
-                </span>
               </div>
               
-              <p className="text-slate-400 text-lg mb-8">
-                Complete study materials tailored for Dehradun students. Carefully verified and ready for the new academic session.
+              <p className="text-brand-black/60 font-medium text-lg mb-8">
+                {book.description || 'A great book available for swap or purchase from our community members.'}
               </p>
 
-              <div className="flex items-end gap-4 mb-10 pb-10 border-b border-slate-700/50">
+              <div className="flex items-end gap-4 mb-10 pb-10 border-b border-black/5">
                 <div>
-                  <p className="text-sm text-slate-400 font-bold uppercase tracking-widest mb-1">Asking Price</p>
-                  <span className="text-5xl font-black text-white tracking-tight">₹{book.price}</span>
-                </div>
-                <div className="mb-2">
-                  <span className="text-xl text-slate-500 line-through font-medium">₹{book.originalPrice || book.price * 3}</span>
+                  <p className="text-sm text-brand-black/50 font-bold uppercase tracking-widest mb-1">Asking Price</p>
+                  <span className="text-6xl font-black text-brand-black tracking-tight">₹{book.price}</span>
                 </div>
               </div>
 
-              {/* Organized Line-by-Line Subjects */}
+              {/* Details List */}
               <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-6">
-                  Included in this bundle
+                <h3 className="text-sm font-bold text-brand-black/50 uppercase tracking-widest mb-6">
+                  {book.includedBooks && book.includedBooks.length > 0 ? 'Bundle Contents & Details' : 'Book Details'}
                 </h3>
-                {/* Grid format creates perfect 2-column or 1-column lists based on screen size */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
-                  {(Array.isArray(book.bookList) ? book.bookList : book.bookList.split(',')).map((item, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      {/* Premium Checkmark SVG instead of basic dot */}
-                      <svg className="w-5 h-5 text-[#cfa168] shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-lg font-medium text-slate-300 capitalize">
-                        {item.trim()}
-                      </span>
+                
+                {book.includedBooks && book.includedBooks.length > 0 && (
+                  <div className="mb-8">
+                    <span className="text-xs text-brand-black/50 uppercase font-bold mb-3 block tracking-widest">Included Books</span>
+                    <ul className="space-y-3">
+                      {book.includedBooks.map((includedBook, idx) => (
+                        <li key={idx} className="flex flex-col bg-brand-cream/30 p-3 rounded-lg border border-black/5">
+                          <span className="font-bold text-brand-black text-lg">{includedBook.title}</span>
+                          <span className="text-sm text-brand-black/60 font-medium">by {includedBook.author}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
+                  {(!book.includedBooks || book.includedBooks.length === 0) && (
+                    <div className="flex flex-col">
+                      <span className="text-xs text-brand-black/50 uppercase font-bold mb-1 tracking-widest">Author</span>
+                      <span className="text-lg font-black text-brand-black">{book.author}</span>
                     </div>
-                  ))}
+                  )}
+                  <div className="flex flex-col">
+                    <span className="text-xs text-brand-black/50 uppercase font-bold mb-1 tracking-widest">Category</span>
+                    <span className="text-lg font-black text-brand-black">{book.category || 'Fiction'}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-brand-black/50 uppercase font-bold mb-1 tracking-widest">Condition</span>
+                    <span className="text-lg font-black text-brand-black">{book.condition || 'Good'}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-brand-black/50 uppercase font-bold mb-1 tracking-widest">Location</span>
+                    <span className="text-lg font-black text-brand-black">{book.location || 'Dehradun'}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -113,13 +134,13 @@ const BookDetails = () => {
             <div className="mt-12 pt-8">
               <button 
                 onClick={handleWhatsApp}
-                className="w-full sm:w-auto premium-btn px-10 py-4 rounded-xl text-lg flex items-center justify-center gap-3 tracking-widest shadow-lg shadow-[#cfa168]/20"
+                className="w-full sm:w-auto bg-brand-black text-white hover:bg-brand-blue px-10 py-5 rounded-full text-lg font-bold flex items-center justify-center gap-3 shadow-xl transition-all hover:-translate-y-1"
               >
                 <span>Message Seller on WhatsApp</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
               </button>
-              <p className="text-sm text-slate-400 mt-4 text-center sm:text-left">
-                You are connecting with a verified local student in Dehradun.
+              <p className="text-sm text-brand-black/50 font-bold mt-4 text-center sm:text-left">
+                You are connecting with a verified BookSwap member.
               </p>
             </div>
           </div>
