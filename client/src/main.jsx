@@ -5,8 +5,12 @@ import App from './App.jsx'
 import axios from 'axios'
 
 // Set global Axios base URL
-// Uses environment variable if present, otherwise defaults to production Render URL
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://bookswap-58eh.onrender.com';
+// Overrides any stale Render URL (like 7daz) or localhost in production
+let apiUrl = import.meta.env.VITE_API_URL;
+if (!apiUrl || apiUrl.includes('7daz') || (import.meta.env.PROD && apiUrl.includes('localhost'))) {
+  apiUrl = 'https://bookswap-58eh.onrender.com';
+}
+axios.defaults.baseURL = apiUrl;
 // Allow credentials (cookies) to be sent with cross-origin requests
 axios.defaults.withCredentials = true;
 
