@@ -6,7 +6,7 @@ import axios from 'axios'
 
 // Set global Axios base URL
 // Uses environment variable if present, otherwise defaults to production Render URL
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://bookswap-backend-7daz.onrender.com';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://bookswap-58eh.onrender.com';
 // Allow credentials (cookies) to be sent with cross-origin requests
 axios.defaults.withCredentials = true;
 

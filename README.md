@@ -3,8 +3,8 @@
 A modern, fully functional book exchange platform built with React, Node.js, and MongoDB. Users can buy, sell, and swap books with other book enthusiasts in their community.
 
 ## 🚀 Live Demo
-* **Frontend:** [https://book-swap-nfhu.vercel.app](https://book-swap-nfhu.vercel.app)
-* **Backend API:** [https://bookswap-backend-7daz.onrender.com](https://bookswap-backend-7daz.onrender.com)
+* **Frontend:** [https://book-swap-peach-ten.vercel.app](https://book-swap-peach-ten.vercel.app)
+* **Backend API:** [https://bookswap-58eh.onrender.com](https://bookswap-58eh.onrender.com)
 
 ## 🎨 Features
 

@@ -19,6 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "https://book-swap-nfhu.vercel.app",
+  "https://book-swap-peach-ten.vercel.app",
   ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL.replace(/\/$/, "")] : [])
 ];
 
